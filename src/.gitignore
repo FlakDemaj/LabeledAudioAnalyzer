@@ -39,11 +39,9 @@ venv.bak/
 # Ignore XML files
 *.xml
 
-
-
 # Ignore all other common backup/temp files
 *.bak
 *.tmp
 *.swp
 
-.Data/Results/
+/Data/Results/
