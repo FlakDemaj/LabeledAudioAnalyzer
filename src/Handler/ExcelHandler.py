@@ -10,17 +10,18 @@ from src.Utils import Logger
 from src.Utils.Constants import base_input_excel_path, result_excel_path
 
 class ExcelHandler:
+
     def __init__(self) -> None:
 
         # Define paths to the Excel files
-        self.labeled_audios_path: Path = base_input_excel_path / "labeled_audios.xlsx"
-        self.real_audios_path: Path = base_input_excel_path / "real_labeled_audios.xlsx"
+        self.Labeled_audios_path: Path = base_input_excel_path / "labeled_audios.xlsx"
+        self.Real_audios_path: Path = base_input_excel_path / "real_labeled_audios.xlsx"
 
         # Initialize logger
-        self.logger: logging.Logger = Logger.get_logger(__name__)
+        self.Logger: logging.Logger = Logger.get_logger(__name__)
 
         # Cached DataFrame for real labeled audio data
-        self._real_labeled_df: Optional[pd.DataFrame] = None
+        self.Real_labeled_df: Optional[pd.DataFrame] = None
 
     def read_and_create_excel(self) -> List[LabeledAudioWithSolutionEntity]:
         """
@@ -36,11 +37,11 @@ class ExcelHandler:
                 return result
 
             self.write_excel_result_file(result)
-            self.logger.info("Write labeled audio file done.")
+            self.Logger.info("Write labeled audio file done.")
             return result
 
         except Exception as e:
-            self.logger.exception("Error while reading labeled audio Excel file")
+            self.Logger.exception("Error while reading labeled audio Excel file")
             raise RuntimeError("Failed to read labeled audio data") from e
 
     def read_real_audio_deepfake_information(self, audio_title: str) -> bool:
@@ -54,19 +55,19 @@ class ExcelHandler:
         :raises RuntimeError: If reading the real label fails or audio title is not found.
         """
         try:
-            if self._real_labeled_df is None:
-                self._real_labeled_df = pd.read_excel(self.real_audios_path)
+            if self.Real_labeled_df is None:
+                self.Real_labeled_df = pd.read_excel(self.Real_audios_path)
 
-            row = self._real_labeled_df.loc[self._real_labeled_df.file == audio_title]
+            row = self.Real_labeled_df.loc[self.Real_labeled_df.file == audio_title]
 
             if row.empty:
-                self.logger.info(f"No match found for audio: {audio_title}")
+                self.Logger.info(f"No match found for audio: {audio_title}")
                 raise ValueError(f"No entry found for audio title: {audio_title}")
 
             return self.convert_to_boolean(row.iloc[0]["label"])
 
         except Exception as e:
-            self.logger.exception("Error while reading real audio label")
+            self.Logger.exception("Error while reading real audio label")
             raise RuntimeError("Failed to read real label for audio") from e
 
     def write_excel_result_file(self, entities: List[LabeledAudioWithSolutionEntity]) -> None:
@@ -79,15 +80,15 @@ class ExcelHandler:
         :raises RuntimeError: If writing the Excel file fails.
         """
         try:
-            self.logger.info("Write excel file...")
+            self.Logger.info("Write excel file...")
             mapped_audios_df: pd.DataFrame = self.entities_to_dataframe(entities)
 
             result_excel_path.parent.mkdir(parents=True, exist_ok=True)
             mapped_audios_df.to_excel(result_excel_path, index=False)
 
-            self.logger.info(f"Excel file saved to {result_excel_path}")
+            self.Logger.info(f"Excel file saved to {result_excel_path}")
         except Exception as e:
-            self.logger.exception("Error while writing real audio label")
+            self.Logger.exception("Error while writing real audio label")
             raise RuntimeError("Failed to write real label for audio") from e
 
     def read_excel_file(self) -> List[LabeledAudioWithSolutionEntity]:
@@ -100,8 +101,8 @@ class ExcelHandler:
         """
 
         try:
-            self.logger.info("Read excel file...")
-            df: pd.DataFrame = pd.read_excel(self.labeled_audios_path)
+            self.Logger.info("Read excel file...")
+            df: pd.DataFrame = pd.read_excel(self.Labeled_audios_path)
             result: List[LabeledAudioWithSolutionEntity] = []
 
             rows_to_iterate = df.iloc[1:]
@@ -117,11 +118,11 @@ class ExcelHandler:
                         real_label,
                     )
                 )
-            self.logger.info("Read excel file done.")
+            self.Logger.info("Read excel file done.")
             return result
 
         except Exception as e:
-            self.logger.exception("Error while reading labeled audio Excel file")
+            self.Logger.exception("Error while reading labeled audio Excel file")
             raise RuntimeError("Failed to read labeled audio data") from e
 
     @staticmethod

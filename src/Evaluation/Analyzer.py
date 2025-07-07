@@ -12,6 +12,7 @@ from sklearn.model_selection import train_test_split
 from scipy.stats import ttest_ind
 from typing import List, Optional
 from pathlib import Path
+import logging
 
 from src.Utils.Constants import confusion_matrix_pdf_output_path
 from src.Utils.Logger import get_logger
@@ -22,9 +23,11 @@ from src.Utils.Constants import correlations_pdf_output_path, base_results_path
 
 class Analyzer:
     def __init__(self):
+
         self.PDFHandler = PDFHandler()
-        self.Logger = get_logger(__name__)
+        self.Logger: logging.Logger = get_logger(__name__)
         self.Logistic_regression_model: LogisticRegression = LogisticRegression()
+
     #region confusionmatrix
 
     def create_confusion_matrix(self, labeled_audios: List[LabeledAudioWithSolutionEntity]) -> None:
