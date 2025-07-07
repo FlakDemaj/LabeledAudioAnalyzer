@@ -45,8 +45,10 @@ class Starter:
             Exception: If reading the Excel file fails or the format is invalid.
         """
         try:
+            self.Logger.info("Starting the reader...")
             excel_reader = ExcelHandler()
             labeled_data = excel_reader.read_and_create_excel()
+            self.Logger.info("Reading is done.")
             return labeled_data
         except Exception as e:
             self.Logger.error("Failed to load labeled audios: %s", str(e))
