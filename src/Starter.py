@@ -1,17 +1,23 @@
 import logging
 
+from datetime import datetime
 from typing import List
 
-from Entity.LabeledAudioWithSolutionEntity import LabeledAudioWithSolutionEntity
-from Evaluation.Analyzer import Analyzer
-from Handler.ExcelHandler import ExcelHandler
+from src.Entity.LabeledAudioWithSolutionEntity import LabeledAudioWithSolutionEntity
+from src.Evaluation.Analyzer import Analyzer
+from src.Handler.ExcelHandler import ExcelHandler
 from src.Utils.Logger import get_logger
+from src.Utils.Constants import (barplot_human_labeling_pdf_output_path, barplot_ai_labeling_pdf_output_path,
+    roc_pdf_output_path, recall_precision_pdf_output_path, recall_precision_with_human_labels_pdf_output_path,
+    confusion_matrix_base_pdf_output_path, correlations_pdf_output_path, logistic_regression_coefficients_pdf_output_path)
+
 
 class Starter:
 
     def __init__(self):
         self.Logger: logging.Logger = get_logger(__name__)
         self.Analyzer: Analyzer = Analyzer()
+        self.ExcelHandler: ExcelHandler = ExcelHandler()
 
         # region Entry Point
 
@@ -23,8 +29,17 @@ class Starter:
         pipeline on it.
         """
         try:
+            starting_time: datetime = datetime.now()
+
+            self.Logger.info(f"Starting at {starting_time}...")
+
             labeled_audios = self.load_labeled_audios()
             self.run_analysis(labeled_audios)
+
+            end_time = datetime.now()
+            self.Logger.info(f"Completed at {end_time}.")
+            self.Logger.info(f"Analysis took {end_time - starting_time} seconds.")
+
         except Exception as e:
             self.Logger.critical("Execution aborted due to a fatal error: ", str(e))
 
@@ -46,9 +61,9 @@ class Starter:
         """
         try:
             self.Logger.info("Starting the reader...")
-            excel_reader = ExcelHandler()
-            labeled_data = excel_reader.read_and_create_excel()
+            labeled_data = self.ExcelHandler.read_and_create_excel()
             self.Logger.info("Reading is done.")
+
             return labeled_data
         except Exception as e:
             self.Logger.error("Failed to load labeled audios: %s", str(e))
@@ -75,17 +90,51 @@ class Starter:
             Exception: If any step in the analysis process fails.
         """
         try:
-            self.Logger.info("Starting the analysis...")
 
-            self.Analyzer.create_confusion_matrix(labeled_audios)
+            self.Logger.info(f"Starting the analysis...")
 
-            self.Analyzer.starting_logistic_regression(labeled_audios)
+            self.Analyzer.create_confusion_matrix(confusion_matrix_base_pdf_output_path / "human_audio_labeling.pdf",
+                                                  labeled_audios)
 
-            self.Analyzer.create_correlation_matrix(labeled_audios)
+            self.Analyzer.create_confusion_matrix_with_raw_data("./Data/Input/ConfusionMatrixData/ai_labeling_confusion_matrix.txt",
+                                                                confusion_matrix_base_pdf_output_path / "ai_audio_labeling.pdf",
+                                                                "Confusion Matrix: AI Audio Labeling")
+
+            self.Analyzer.create_confusion_matrix_with_raw_data("./Data/Input/ConfusionMatrixData/ai_human_emulation_confusion_matrix.txt",
+                                                                confusion_matrix_base_pdf_output_path / "ai_human_emulation_confusion_matrix.pdf",
+                                                                "Confusion Matrix: AI Human Emulation")
+
+
+            self.Analyzer.starting_logistic_regression(
+                logistic_regression_coefficients_pdf_output_path,
+                labeled_audios)
+
+            self.Analyzer.create_correlation_matrix(correlations_pdf_output_path,
+                                                    labeled_audios)
 
             self.Analyzer.create_boxplots(labeled_audios)
 
-            self.Logger.info("Analysis complete.")
+            self.Analyzer.create_barplot("./Data/Input/ConfusionMatrixData/human_labeling_confusion_matrix.txt",
+                                         barplot_human_labeling_pdf_output_path)
+
+            self.Analyzer.create_barplot("./Data/Input/ConfusionMatrixData/ai_labeling_confusion_matrix.txt",
+                                         barplot_ai_labeling_pdf_output_path)
+
+            self.Analyzer.create_roc("./Data/Input/Results/ai_result.txt",
+                                     roc_pdf_output_path)
+
+            self.Analyzer.create_precision_recall("./Data/Input/Results/ai_result.txt",
+                                                  recall_precision_pdf_output_path)
+
+            self.Analyzer.create_precision_recall_with_human_labels("./Data/Input/Results/ai_result.txt",
+                                                                    recall_precision_with_human_labels_pdf_output_path,
+                                                                    labeled_audios)
+
+            #self.Analyzer.start_cluster_analyse(labeled_audios,
+            #                        "./Data/Input/Audios/release_in_the_wild",
+            #                                    cluster_analyse_pdf_output_path)
+
+            self.Logger.info(f"Analysis complete.")
 
         except Exception as e:
             self.Logger.critical("Analysis process failed: %s", str(e))

@@ -105,8 +105,7 @@ class ExcelHandler:
             df: pd.DataFrame = pd.read_excel(self.Labeled_audios_path)
             result: List[LabeledAudioWithSolutionEntity] = []
 
-            rows_to_iterate = df.iloc[1:]
-            for row in tqdm(rows_to_iterate.itertuples(index=False), total=len(rows_to_iterate)):
+            for row in tqdm(df.itertuples(index=False), total=len(df)):
                 real_label: bool = self.read_real_audio_deepfake_information(row.audio_title)
                 result.append(
                     LabeledAudioWithSolutionEntity(
