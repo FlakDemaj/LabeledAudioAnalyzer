@@ -19,14 +19,12 @@ from pathlib import Path
 from ast import literal_eval
 #from tqdm import tqdm
 
-from src.Utils.Constants import confusion_matrix_base_pdf_output_path
 from src.Utils.Logger import get_logger
-from src.Utils.Constants import logistic_regression_coefficients_pdf_output_path
 from src.Entity.LabeledAudioWithSolutionEntity import LabeledAudioWithSolutionEntity
 from src.Entity.ConfusionMatrixDataEntity import ConfusionMatrixDataEntity
 #from src.Extractor.FeatureExtractor import FeatureExtractor
 from src.Handler.PDFHandler import PDFHandler
-from src.Utils.Constants import correlations_pdf_output_path, base_results_path
+from src.Utils.Constants import base_results_path
 
 class Analyzer:
     def __init__(self):
@@ -40,7 +38,8 @@ class Analyzer:
 
     def create_confusion_matrix(self,
                                 output_path:Path,
-                                labeled_audios: List[LabeledAudioWithSolutionEntity]) -> None:
+                                labeled_audios: List[LabeledAudioWithSolutionEntity],
+                                title: str) -> None:
         """
         Generates and displays a confusion matrix for human-labeled audio data compared to ground truth.
 
@@ -48,6 +47,8 @@ class Analyzer:
 
         Args:
             labeled_audios(List[LabeledAudioWithSolutionEntity]): List of audio entities with human labels and ground truth labels.
+            output_path (Path): Path where the resulting PDF plot should be saved.
+            title (str): Title of the confusion matrix.
 
         Returns:
             None
@@ -60,7 +61,7 @@ class Analyzer:
         y_pred = [audio.human_df_label for audio in labeled_audios]
 
         # Define class labels
-        labels = ["negative", "positive"]
+        labels = ["Negative", "Positive"]
 
         # Compute the confusion matrix
         confusion_matrix = metrics.confusion_matrix(y_true, y_pred)
@@ -73,7 +74,7 @@ class Analyzer:
         # Set axis labels and title
         plt.xlabel("Human Prediction")
         plt.ylabel("True Label")
-        plt.title("Confusion Matrix: Human Audio Labeling")
+        plt.title(title)
         plt.tight_layout()
         self.Logger.info("Create confusion matrix done.")
 
@@ -119,7 +120,7 @@ class Analyzer:
                                      [fn, tp]])
 
         # Define label names for the axes
-        labels = ["negative", "positive"]
+        labels = ["Negative", "Positive"]
 
         # Create the heatmap plot
         plt.figure(figsize=(6, 5))
@@ -144,7 +145,8 @@ class Analyzer:
 
     def starting_logistic_regression(self,
                                      output_path: Path,
-                                     labeled_audios_list: List[LabeledAudioWithSolutionEntity]) -> None:
+                                     labeled_audios_list: List[LabeledAudioWithSolutionEntity],
+                                     title: str) -> None:
         """
         Performs logistic regression analysis to predict human-assigned deepfake labels
         using subjective audio scores (naturalness, emotionality, rhythm).
@@ -155,6 +157,10 @@ class Analyzer:
         Args:
             labeled_audios_list (List[LabeledAudioWithSolutionEntity]):
                 A list of labeled audio samples with both subjective scores and ground truth labels.
+                        output_path (Path): Path where the resulting PDF plot should be saved.
+            output_path (Path): Path where the resulting PDF plot should be saved.
+            title (str): Title to display on the confusion matrix plot.
+
 
         Returns:
             None
@@ -170,7 +176,7 @@ class Analyzer:
 
         self.Logger.info("Preparing training and testing data...")
         # Feature matrix
-        x: pd.DataFrame = labeled_audios_df[["naturalness", "emotionality", "rhythm"]]
+        x: pd.DataFrame = labeled_audios_df[["Naturalness", "Emotionality", "Rhythm"]]
         # Target: human-assigned deepfake label
         y: pd.Series = labeled_audios_df["human_label"]
 
@@ -199,12 +205,18 @@ class Analyzer:
             "Coefficient": self.Logistic_regression_model.coef_[0]
         })
         self.Logger.info(f"Model coefficients:\n{coeff_df}")
-        self.plot_coefficients(output_path)
+        self.plot_coefficients(output_path, title)
 
-    def plot_coefficients(self, output_path: Path) -> None:
+    def plot_coefficients(self,
+                          output_path: Path,
+                          title: str) -> None:
         """
         Plots the coefficients of the trained logistic regression model
         to visualize feature importance and direction (positive/negative).
+
+        Args:
+            output_path (Path): Path where the resulting PDF plot should be saved.
+            title (str): Title of the plot.
 
         Returns:
             None
@@ -214,7 +226,7 @@ class Analyzer:
             return
 
         # Extract feature names and coefficients
-        features: List[str] = ["naturalness", "emotionality", "rhythm"]
+        features: List[str] = ["Naturalness", "Emotionality", "Rhythm"]
         coefficients: List[float] = self.Logistic_regression_model.coef_[0].tolist()
 
         abs_coeffs: np.ndarray = np.abs(coefficients)
@@ -232,7 +244,7 @@ class Analyzer:
         plt.figure(figsize=(8, 4))
         plt.barh(features, coefficients, color=colors)
         plt.xlabel("Coefficient Value")
-        plt.title("Logistic Regression Coefficients")
+        plt.title(title)
         plt.axvline(x=0, color="gray", linestyle="--")
         plt.tight_layout()
 
@@ -246,7 +258,8 @@ class Analyzer:
 
     def create_correlation_matrix(self,
                                   output_path: Path,
-                                  labeled_audios_list: List[LabeledAudioWithSolutionEntity]) -> None:
+                                  labeled_audios_list: List[LabeledAudioWithSolutionEntity],
+                                  title: str) -> None:
         """
         Computes and visualizes the Pearson correlation matrix between selected features
         ('emotionality', 'rhythm', 'naturalness') based on labeled audio data.
@@ -256,6 +269,8 @@ class Analyzer:
 
         Args:
             labeled_audios_list (List[LabeledAudioWithSolutionEntity]): List of labeled audio data objects.
+            output_path (Path): Path where the resulting PDF plot should be saved.
+            title (str): Title of the plot.
 
         Returns:
             None
@@ -266,14 +281,14 @@ class Analyzer:
         labeled_audios_df: pd.DataFrame = self.list_to_dataframe_converter(labeled_audios_list)
 
         # Define the features for which to compute correlations
-        features: List[str] = ["emotionality", "rhythm", "naturalness"]
+        features: List[str] = ["Emotionality", "Rhythm", "Naturalness"]
 
         # Calculate the Pearson correlation matrix for the selected features
         corr_matrix: pd.DataFrame = labeled_audios_df[features].corr(method="pearson")
 
         # Create a heatmap visualization of the correlation matrix
-        sns.heatmap(corr_matrix, annot=True, cmap="Blues", vmin=0.3, vmax=1)
-        plt.title("Korrelationen zwischen Bewertungskriterien")
+        sns.heatmap(corr_matrix, annot=True, cmap="Blues", vmin=0.7, vmax=1)
+        plt.title(title)
 
         self.Logger.info("Created correlation matrix.")
 
@@ -286,10 +301,11 @@ class Analyzer:
     #endregion
 
     #region boxplot
-    def create_boxplots(self,
-                        labeled_audios_list: List[LabeledAudioWithSolutionEntity]) -> None:
+    def create_boxplot(self,
+                       labeled_audios_list: List[LabeledAudioWithSolutionEntity],
+                       title: str) -> None:
         """
-        Creates boxplots comparing Deepfake and Real audio samples for multiple features
+        Creates boxplot comparing Deepfake and Real audio samples for multiple features
         based on both perceived (human_label) and true (true_label) labels,
         and performs independent t-tests to check for significant differences.
 
@@ -300,6 +316,7 @@ class Analyzer:
 
         Args:
             labeled_audios_list (List[LabeledAudioWithSolutionEntity]): List of labeled audio data objects.
+            title (str): Title of the plot.
 
         Returns:
             None
@@ -307,7 +324,7 @@ class Analyzer:
         # Convert the list of labeled audios to a DataFrame for easier processing
         labeled_audios_df: pd.DataFrame = self.list_to_dataframe_converter(labeled_audios_list)
 
-        for feature in ["naturalness", "emotionality", "rhythm"]:
+        for feature in ["Naturalness", "Emotionality", "Rhythm"]:
             for label_type in ["human_label", "true_label"]:
                 self.Logger.info(f"Create Boxplot for feature: {feature} using {label_type}...")
 
@@ -321,9 +338,9 @@ class Analyzer:
 
                 # Create the boxplot
                 sns.boxplot(x=label_type, y=feature, data=labeled_audios_df)
-                label_desc = "Menschliche Wahrnehmung" if label_type == "human_label" else "Tatsächliches Resultat"
-                plt.title(f"{feature.capitalize()}: Deepfakes vs. echte Stimmen\n({label_desc})")
-                plt.xlabel("Deepfake (True = ja)")
+                label_desc = "Human Perception" if label_type == "human_label" else "Real Result"
+                plt.title(f"{feature.capitalize()}: {title}\n({label_desc})")
+                plt.xlabel("Deepfake = True")
                 plt.ylabel(feature.capitalize())
 
                 # Annotate with t-statistic and p-value
@@ -349,7 +366,11 @@ class Analyzer:
 
     #region barplot
 
-    def create_barplot(self, input_path: str, output_path: Path) -> None:
+    def create_barplot(
+            self,
+            input_path: str,
+            output_path: Path,
+            title: str) -> None:
         """
         Generates a bar plot based on confusion matrix metrics stored in a file.
 
@@ -364,6 +385,7 @@ class Analyzer:
         Args:
             input_path (str): Path to the file containing the confusion matrix data.
             output_path (Path): Path where the resulting PDF file will be saved.
+            title (str): The Title for the plot.
         """
 
         self.Logger.info(f"Creating Barplot for {input_path}...")
@@ -380,10 +402,11 @@ class Analyzer:
         ]
 
         # Define bar labels
-        barplot_bars: List[str] = ["Sensitivität", "Spezifität", "Präzision", "F-Score"]
+        barplot_bars: List[str] = ["Sensitivity", "Specificity", "Precision", "F-Score"]
 
         # Generate bar plot
         y_pos = np.arange(len(barplot_bars))
+        plt.title(title)
         plt.bar(y_pos, barplot_data)
         plt.xticks(y_pos, barplot_bars)
 
@@ -400,7 +423,10 @@ class Analyzer:
 
     #regoion roc
 
-    def create_roc(self, input_path: str, output_path: Path) -> None:
+    def create_roc(self,
+                   input_path: str,
+                   output_path: Path,
+                   title: str) -> None:
         """
         Loads prediction results from a file, computes the ROC curve, and displays it using matplotlib.
 
@@ -410,7 +436,8 @@ class Analyzer:
 
         Args:
             input_path (str): Path to the file containing prediction results.
-            output_path (Path): Path where th efile should be saved.
+            output_path (Path): Path where the file should be saved.
+            title (str): The Title for the plot.
         """
 
         self.Logger.info("Starting creating roc analysis...")
@@ -445,7 +472,7 @@ class Analyzer:
         plt.ylabel('True Positive Rate')
 
         # Add plot title and legend
-        plt.title('ROC Curve')
+        plt.title(title)
         plt.legend(loc="lower right")
         plt.grid(True)
 
@@ -458,7 +485,10 @@ class Analyzer:
 
     #region Precision-Recall
 
-    def create_precision_recall(self, input_path: str, output_path: Path) -> None:
+    def create_precision_recall(self,
+                                input_path: str,
+                                output_path: Path,
+                                title: str) -> None:
         """
         Generates a Precision-Recall curve based on prediction results and saves it as a PDF.
 
@@ -470,7 +500,7 @@ class Analyzer:
         Args:
             input_path (str): Path to the input file containing prediction results.
             output_path (Path): Path where the resulting PDF plot will be saved.
-
+            title (str): Title of the plot.
         Returns:
             None
         """
@@ -496,7 +526,7 @@ class Analyzer:
         plt.plot(recall, precision, label=f'AP = {avg_precision:.2f}')
         plt.xlabel("Recall")
         plt.ylabel("Precision")
-        plt.title("Precision-Recall Curve")
+        plt.title(title)
         plt.legend()
         plt.grid(True)
         plt.tight_layout()
@@ -510,7 +540,8 @@ class Analyzer:
     def create_precision_recall_with_human_labels(self,
                                                   input_path: str,
                                                   output_path: Path,
-                                                  labeled_audios_list: List[LabeledAudioWithSolutionEntity]) -> None:
+                                                  labeled_audios_list: List[LabeledAudioWithSolutionEntity],
+                                                  title: str) -> None:
         """
            Creates and saves a precision-recall curve comparing model predictions with human labels.
 
@@ -523,7 +554,7 @@ class Analyzer:
                input_path (str): Path to the input file containing model results.
                output_path (Path): Path where the generated PDF plot will be saved.
                labeled_audios_list (List[LabeledAudioWithSolutionEntity]): List of labeled audio entities with human labels.
-
+               title (str): Title of the plot.
            Returns:
                None
            """
@@ -545,16 +576,16 @@ class Analyzer:
         self.Logger.info("Precision recall with human labels analysis is done.")
 
         plt.figure(figsize=(8, 6))
-        plt.plot(recall_ki, precision_ki, label='KI-Modell PR-Kurve')
-        plt.scatter(recall_human, precision_human, color='red', label='Menschen-Performance', zorder=5, s=100)
+        plt.plot(recall_ki, precision_ki, label='AI-Model PR-Curve')
+        plt.scatter(recall_human, precision_human, color='red', label='Human-Performance', zorder=5, s=100)
         plt.xlabel('Recall')
         plt.ylabel('Precision')
-        plt.title('Precision-Recall-Kurve mit Menschen-Performance')
+        plt.title(title)
         plt.legend()
         plt.grid(True)
 
         self.PDFHandler.safe_pdf(output_path, plt)
-    plt.show()
+        plt.show()
 
     #endregion
     '''
@@ -657,9 +688,9 @@ class Analyzer:
         self.Logger.info("Converting input list to pandas DataFrame...")
 
         df: pd.DataFrame = pd.DataFrame([{
-            "naturalness": x.naturalness_score,
-            "emotionality": x.emotionality_score,
-            "rhythm": x.rhythm_score,
+            "Naturalness": x.naturalness_score,
+            "Emotionality": x.emotionality_score,
+            "Rhythm": x.rhythm_score,
             "human_label": x.human_df_label,
             "true_label": x.is_truly_df,
             "audio_title": x.audio_title
