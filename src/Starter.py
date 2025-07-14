@@ -94,7 +94,8 @@ class Starter:
             self.Logger.info(f"Starting the analysis...")
 
             self.Analyzer.create_confusion_matrix(confusion_matrix_base_pdf_output_path / "human_audio_labeling.pdf",
-                                                  labeled_audios)
+                                                  labeled_audios,
+                                                  "Confusion Matrix: Human Audio Labeling")
 
             self.Analyzer.create_confusion_matrix_with_raw_data("./Data/Input/ConfusionMatrixData/ai_labeling_confusion_matrix.txt",
                                                                 confusion_matrix_base_pdf_output_path / "ai_audio_labeling.pdf",
@@ -107,28 +108,36 @@ class Starter:
 
             self.Analyzer.starting_logistic_regression(
                 logistic_regression_coefficients_pdf_output_path,
-                labeled_audios)
+                labeled_audios,
+            "Logistic Regression Coefficients")
 
             self.Analyzer.create_correlation_matrix(correlations_pdf_output_path,
-                                                    labeled_audios)
+                                                    labeled_audios,
+                                                    "Correlation between the assessment criterion")
 
-            self.Analyzer.create_boxplots(labeled_audios)
+            self.Analyzer.create_boxplot(labeled_audios,
+                                          "Deepfakes vs. real voices")
 
             self.Analyzer.create_barplot("./Data/Input/ConfusionMatrixData/human_labeling_confusion_matrix.txt",
-                                         barplot_human_labeling_pdf_output_path)
+                                         barplot_human_labeling_pdf_output_path,
+                                         "Human Labeling Metrics")
 
             self.Analyzer.create_barplot("./Data/Input/ConfusionMatrixData/ai_labeling_confusion_matrix.txt",
-                                         barplot_ai_labeling_pdf_output_path)
+                                         barplot_ai_labeling_pdf_output_path,
+                                         "AI Labeling Metrics")
 
             self.Analyzer.create_roc("./Data/Input/Results/ai_result.txt",
-                                     roc_pdf_output_path)
+                                     roc_pdf_output_path,
+                                     "ROC AI Labeling Curve")
 
             self.Analyzer.create_precision_recall("./Data/Input/Results/ai_result.txt",
-                                                  recall_precision_pdf_output_path)
+                                                  recall_precision_pdf_output_path,
+                                                  "Precision-Recall Curve")
 
             self.Analyzer.create_precision_recall_with_human_labels("./Data/Input/Results/ai_result.txt",
                                                                     recall_precision_with_human_labels_pdf_output_path,
-                                                                    labeled_audios)
+                                                                    labeled_audios,
+                                                                    "Precision-Recall-Curve with human-performance")
 
             #self.Analyzer.start_cluster_analyse(labeled_audios,
             #                        "./Data/Input/Audios/release_in_the_wild",
