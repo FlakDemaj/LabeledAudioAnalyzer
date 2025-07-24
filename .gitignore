@@ -1,0 +1,49 @@
+# Byte-compiled / optimized / DLL files
+src/__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# PyCharm project files
+../.idea/
+
+# VS Code settings
+.vscode/
+
+# macOS system files
+.DS_Store
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# Python-specific files
+*.pyc
+*.pyo
+
+# Ignore XML files
+*.xml
+
+# Ignore all other common backup/temp files
+*.bak
+*.tmp
+*.swp
+*.iml
+
+# Ignore all results
+src/Data/Results/
