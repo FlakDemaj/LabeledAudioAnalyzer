@@ -1,12 +1,81 @@
 # LabeledAudioAnalyzer
 
-## Analyse der gelabelten Audiodateien starten
+A tool for analyzing labeled audio files - automated, structured, and easy to use
 
-1. Installieren Sie zunächst alle benötigten Abhängigkeiten mit folgendem Befehl:
+---
 
+## Features
+
+- Automatically analyze labeled audio files
+- Creates a clean and structured `Results` file
+- Output ready for further processing and evaluation
+
+---
+
+## Quick Start
+
+### 1. Clone the repository (optional)
+
+```bash
+git clone https://github.com/FlakDemaj/LabeledAudioAnalyzer.git
+cd LabeledAudioAnalyzer
+```
+
+### 2. Install dependencies
+
+To install all the needed dependencies, just use the following command
+
+```bash
 pip install -r requirements.txt
+```
 
-2. Starten Sie anschließend die Analyse, indem Sie die Funktion main() in der Datei main.py ausführen.
+### 3. Run the analysis
 
-3. Nach dem Start der Analyse wird automatisch ein neuer Ordner mit dem Namen "Results" im Verzeichnis "Data" erstellt.
- Dort finden Sie die Ergebnisse der Analyse.
+Start the analysis by executing the function `main()` in main.py or with
+the following command:
+
+```bash
+python main.py
+```
+
+### 4. View the results
+
+After analysis, a new folder named **Results** will be created inside
+the *Data* directory:
+
+📁 src
+ └── 📁 Data
+     └── 📁 Results
+          └── ... analysis output files
+
+### Project Structure
+
+📁 LabeledAudioAnalyzer
+ ├── 📁 src                # Modules / Data
+ ├── main.py               # Entry point for analysis
+ ├── requirements.txt      # Python dependencies
+ ├── README.md             # Project documentation
+ ├── requirements.txt      # Python dependencies
+ └── .gitignore            # Git ignore file
+ 
+ ### Requirements
+ 
+ * Python 3.8 or higher
+ * OS_ Windows, macOS or Linux
+
+### Sample Data
+audio_id ,audio_title, naturalness, emotions, rhythm, labeling_date,               is_deepfake,state
+4        ,3.wav      ,3            ,3        ,2       ,2025-06-13 10:54:32.772599  ,false      ,3
+
+### Contributing
+
+Contributions, feature requests, and bug reports are welcome!
+
+### License
+
+This project is licensed under the MIT License.
+
+### Author
+
+GitHub: @FlakDemaj
+Email: flakron.demaj@outlook.de
