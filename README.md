@@ -45,8 +45,8 @@ the *Data* directory:
 
 📁 src                 
 ├── 📁 Data  
------└── 📁 Results  
-----------└── ... analysis output files
+-------└── 📁 Results  
+------------└── ... analysis output files
 
 
 ## General
