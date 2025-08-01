@@ -48,6 +48,8 @@ the *Data* directory:
      └── 📁 Results  
           └── ... analysis output files  
 
+## General
+
 ### Project Structure
 
 📁 LabeledAudioAnalyzer  
@@ -58,7 +60,7 @@ the *Data* directory:
  ├── requirements.txt      # Python dependencies  
  └── .gitignore            # Git ignore file  
  
- ### Requirements
+### Requirements
  
  * Python 3.8 or higher
  * OS_ Windows, macOS or Linux
