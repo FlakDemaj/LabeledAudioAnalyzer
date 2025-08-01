@@ -51,12 +51,12 @@ the *Data* directory:
 ### Project Structure
 
 📁 LabeledAudioAnalyzer  
- ├── 📁 src                  # Modules / Data
- ├── main.py                 # Entry point for analysis
- ├── requirements.txt        # Python dependencies
- ├── README.md               # Project documentation
- ├── requirements.txt        # Python dependencies
- └── .gitignore              # Git ignore file
+ ├── 📁 src                # Modules / Data  
+ ├── main.py               # Entry point for analysis  
+ ├── requirements.txt      # Python dependencies  
+ ├── README.md             # Project documentation  
+ ├── requirements.txt      # Python dependencies  
+ └── .gitignore            # Git ignore file  
  
  ### Requirements
  
