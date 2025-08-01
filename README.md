@@ -43,20 +43,20 @@ python main.py
 After analysis, a new folder named **Results** will be created inside
 the *Data* directory:
 
-📁 src
- └── 📁 Data
-     └── 📁 Results
-          └── ... analysis output files
+📁 src  
+ └── 📁 Data  
+     └── 📁 Results  
+          └── ... analysis output files  
 
 ### Project Structure
 
-📁 LabeledAudioAnalyzer
- ├── 📁 src                # Modules / Data
- ├── main.py               # Entry point for analysis
- ├── requirements.txt      # Python dependencies
- ├── README.md             # Project documentation
- ├── requirements.txt      # Python dependencies
- └── .gitignore            # Git ignore file
+📁 LabeledAudioAnalyzer  
+ ├── 📁 src                  # Modules / Data
+ ├── main.py                 # Entry point for analysis
+ ├── requirements.txt        # Python dependencies
+ ├── README.md               # Project documentation
+ ├── requirements.txt        # Python dependencies
+ └── .gitignore              # Git ignore file
  
  ### Requirements
  
