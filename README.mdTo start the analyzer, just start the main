@@ -1,5 +1,0 @@
-To start the analysis for the labeled audios, execute the command:
-
-pip install -r requirements.txt
-
-and start the main() in main.py
