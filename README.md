@@ -67,8 +67,14 @@ the *Data* directory:
  * OS_ Windows, macOS or Linux
 
 ### Sample Data
-audio_id ,audio_title, naturalness, emotions, rhythm, labeling_date,               is_deepfake,state  
-4        ,3.wav      ,3            ,3        ,2       ,2025-06-13 10:54:32.772599  ,false      ,3
+- audio_id: 4 
+- audio_title: 3.wav
+- naturalness: 3
+- emotions: 3
+- rhythm: 2
+- labeling_date: 2025-06-13 10:54:32.772599
+- is_deepfake: false
+- state: 3  
 
 ### Contributing
 
