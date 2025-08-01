@@ -64,7 +64,7 @@ the *Data* directory:
  * OS_ Windows, macOS or Linux
 
 ### Sample Data
-audio_id ,audio_title, naturalness, emotions, rhythm, labeling_date,               is_deepfake,state
+audio_id ,audio_title, naturalness, emotions, rhythm, labeling_date,               is_deepfake,state  
 4        ,3.wav      ,3            ,3        ,2       ,2025-06-13 10:54:32.772599  ,false      ,3
 
 ### Contributing
@@ -77,5 +77,5 @@ This project is licensed under the MIT License.
 
 ### Author
 
-GitHub: @FlakDemaj
+GitHub: @FlakDemaj  
 Email: flakron.demaj@outlook.de
