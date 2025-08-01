@@ -44,7 +44,9 @@ After analysis, a new folder named **Results** will be created inside
 the *Data* directory:
 
 📁 src                 
-├── 📁 Data  └── 📁 Results  └── ... analysis output files
+├── 📁 Data  
+-----└── 📁 Results  
+----------└── ... analysis output files
 
 
 ## General
