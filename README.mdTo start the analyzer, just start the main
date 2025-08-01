@@ -1,0 +1,12 @@
+# LabeledAudioAnalyzer
+
+## Analyse der gelabelten Audiodateien starten
+
+1. Installieren Sie zunächst alle benötigten Abhängigkeiten mit folgendem Befehl:
+
+pip install -r requirements.txt
+
+2. Starten Sie anschließend die Analyse, indem Sie die Funktion main() in der Datei main.py ausführen.
+
+3. Nach dem Start der Analyse wird automatisch ein neuer Ordner mit dem Namen "Results" im Verzeichnis "Data" erstellt.
+ Dort finden Sie die Ergebnisse der Analyse.

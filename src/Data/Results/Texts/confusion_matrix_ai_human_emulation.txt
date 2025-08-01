@@ -1,0 +1,8 @@
+{
+    "Accuracy": 0.6825775656324582,
+    "Negative Predictive Value": 0.661608497723824,
+    "Sensitivity": 0.3788300835654596,
+    "Specificity": 0.9102296450939458,
+    "Precision": 0.7597765363128491,
+    "F1-Score": 0.5055762081784387
+}
