@@ -43,7 +43,7 @@ python main.py
 After analysis, a new folder named **Results** will be created inside
 the *Data* directory:
 
-<pre> ``` 📁 src ├── 📁 Data └── 📁 Results └── ... analysis output files ``` </pre>
+<pre> ``` 📁 src  ├── 📁 Data  └── 📁 Results  └── ... analysis output files ``` </pre>
 
 
 ## General
