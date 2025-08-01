@@ -45,7 +45,7 @@ the *Data* directory:
 
 📁 src  
  └── 📁 Data  
-     └── 📁 Results  
+     └── 📁 Results    
           └── ... analysis output files  
 
 ## General
@@ -57,7 +57,7 @@ the *Data* directory:
  ├── main.py               # Entry point for analysis  
  ├── requirements.txt      # Python dependencies  
  ├── README.md             # Project documentation  
- ├── requirements.txt      # Python dependencies  
+ ├── LICENSE               # The License to the project 
  └── .gitignore            # Git ignore file  
  
 ### Requirements
