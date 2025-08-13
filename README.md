@@ -38,7 +38,19 @@ the following command:
 python main.py
 ```
 
-### 4. View the results
+After starting, you will be asked whether you want to display the plots.
+You can only answer this question with yes or no.
+Regardless of your choice, the plots will always be saved.
+
+This prompt is especially relevant if you run the analyzer in a terminal:
+After each plot is generated, the program will pause and display it until you close the window.
+With many plots, this can quickly become annoying.
+
+**Recommendation:**
+Choose no if you run the analyzer in a terminal.
+If you use an IDE or a similar environment, this issue will not occur.
+
+### 5. View the results
 
 After analysis, a new folder named **Results** will be created inside
 the *Data* directory:
