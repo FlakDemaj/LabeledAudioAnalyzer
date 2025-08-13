@@ -46,7 +46,7 @@ This prompt is especially relevant if you run the analyzer in a terminal:
 After each plot is generated, the program will pause and display it until you close the window.
 With many plots, this can quickly become annoying.
 
-**Recommendation:**
+**Recommendation:**  
 Choose no if you run the analyzer in a terminal.
 If you use an IDE or a similar environment, this issue will not occur.
 
